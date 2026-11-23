@@ -1,0 +1,164 @@
+// Velvet OS: Exact Contract UI
+// Tri-color palette: blue/black/white, zero gradients
+
+routes app
+  dashboard "/"
+  terminal "/terminal"
+  agents "/agents"
+  models "/models"
+  tools "/tools"
+  memory "/memory"
+  settings "/settings"
+  security "/security"
+  a2ui "/a2ui"
+  exact "/exact"
+  elephant "/elephant"
+  artex "/artex"
+  nethunter "/nethunter"
+  rea "/rea"
+  context7 "/context7"
+
+component VelvetApp
+  state authenticated = false
+  state themeMode = "system"
+  state activeTab = "dashboard"
+  state healthCpu = 45
+  state healthMemory = 62
+  state healthDisk = 34
+  state healthNetwork = 12
+  state loginError = ""
+
+  derive healthCpuStr = healthCpu.toString()
+  derive healthMemoryStr = healthMemory.toString()
+  derive healthDiskStr = healthDisk.toString()
+  derive healthNetworkStr = healthNetwork.toString()
+
+  action login()
+    authenticated = true
+    loginError = ""
+
+  action logout()
+    authenticated = false
+
+  action setTheme(mode: string)
+    themeMode = mode
+
+  action setTab(tab: string)
+    activeTab = tab
+
+  view
+    main testId="root" width="100%" height="100%"
+      if (authenticated == false)
+        column width="100%" height="100%" align-items="center" justify-content="center"
+          text "Velvet OS" role="heading" aria-level=1 font-size=32 font-weight=700
+          text "Agentic Operating System" font-size=16 color="#666666"
+          column width="320px" gap=12
+            text "Email" font-size=14 font-weight=500
+            input testId="email-input" placeholder="email@velvetos.com" width="100%" padding=8
+            text "Password" font-size=14 font-weight=500
+            input testId="password-input" type="password" width="100%" padding=8
+            if (loginError != "")
+              text loginError font-size=14 color="#dc2626"
+            button press=login aria-label="Sign In" testId="login-button" width="100%" padding=10 background-color="#0066ff" color="#ffffff"
+              text "Sign In" font-weight=600
+      else
+        row width="100%" height="100%"
+          column width="280px" gap=4 padding=4
+            text "Velvet OS" role="heading" aria-level=2 font-size=20 font-weight=700
+            button press=setTab("dashboard") width="100%" padding=8 align-items="flex-start" background-color="transparent"
+              text "Dashboard" font-size=14
+            button press=setTab("terminal") width="100%" padding=8 align-items="flex-start" background-color="transparent"
+              text "Terminal" font-size=14
+            button press=setTab("agents") width="100%" padding=8 align-items="flex-start" background-color="transparent"
+              text "Agents" font-size=14
+            button press=setTab("models") width="100%" padding=8 align-items="flex-start" background-color="transparent"
+              text "Models" font-size=14
+            button press=setTab("tools") width="100%" padding=8 align-items="flex-start" background-color="transparent"
+              text "Tools" font-size=14
+            button press=setTab("memory") width="100%" padding=8 align-items="flex-start" background-color="transparent"
+              text "Memory" font-size=14
+            button press=setTab("settings") width="100%" padding=8 align-items="flex-start" background-color="transparent"
+              text "Settings" font-size=14
+            button press=setTab("security") width="100%" padding=8 align-items="flex-start" background-color="transparent"
+              text "Security" font-size=14
+          column flex=1 width="100%" height="100%" gap=0
+            header height=56 padding=8 display="flex" align-items="center" justify-content="space-between" background-color="#ffffff" color="#000000"
+              text activeTab font-size=18 font-weight=500
+              row gap=8
+                button press=setTheme(themeMode) aria-label="Theme" testId="theme-button" background-color="transparent" color="#000000"
+                  text themeMode font-size=14
+                button press=logout aria-label="Sign Out" testId="signout-button" background-color="transparent" color="#000000"
+                  text "Sign Out" font-size=14
+            scroll id="content" flex=1 min-height=0 padding=16 background-color="#ffffff" color="#000000"
+              if (activeTab == "dashboard")
+                column gap=16 width="100%"
+                  text "Dashboard" role="heading" aria-level=2 font-size=24 font-weight=700
+                  row gap=8 width="100%"
+                    column flex=1 padding=8
+                      text "CPU" font-size=12 font-weight=500 color="#666666"
+                      text healthCpuStr font-size=20 font-weight=700
+                    column flex=1 padding=8
+                      text "Memory" font-size=12 font-weight=500 color="#666666"
+                      text healthMemoryStr font-size=20 font-weight=700
+                    column flex=1 padding=8
+                      text "Disk" font-size=12 font-weight=500 color="#666666"
+                      text healthDiskStr font-size=20 font-weight=700
+                    column flex=1 padding=8
+                      text "Network" font-size=12 font-weight=500 color="#666666"
+                      text healthNetworkStr font-size=20 font-weight=700
+              else if (activeTab == "terminal")
+                column gap=8 width="100%"
+                  text "Terminal" role="heading" aria-level=2 font-size=24 font-weight=700
+                  text "Velvet OS Terminal - Interactive command interface" font-size=14 color="#666666"
+              else if (activeTab == "agents")
+                column gap=8 width="100%"
+                  text "Agent Manager" role="heading" aria-level=2 font-size=24 font-weight=700
+                  text "Agents managed via Infinity Runtime" font-size=14 color="#666666"
+              else if (activeTab == "models")
+                column gap=8 width="100%"
+                  text "Model Manager" role="heading" aria-level=2 font-size=24 font-weight=700
+                  text "Models managed via Dolphy + Needle" font-size=14 color="#666666"
+              else if (activeTab == "tools")
+                column gap=8 width="100%"
+                  text "Tool Integrator" role="heading" aria-level=2 font-size=24 font-weight=700
+                  text "ARTEX, Nethunter, Dolphy, Flipper Zero, Sapper v2" font-size=14 color="#666666"
+              else if (activeTab == "memory")
+                column gap=8 width="100%"
+                  text "Vector Memory" role="heading" aria-level=2 font-size=24 font-weight=700
+                  text "Elephant Goldfish memory system" font-size=14 color="#666666"
+              else if (activeTab == "settings")
+                column gap=8 width="100%"
+                  text "Settings" role="heading" aria-level=2 font-size=24 font-weight=700
+                  text "Theme: {themeMode}" font-size=14 color="#666666"
+              else if (activeTab == "security")
+                column gap=8 width="100%"
+                  text "Security Tools" role="heading" aria-level=2 font-size=24 font-weight=700
+                  text "ARTEX, Nethunter, Dolphy, Flipper Zero, Sapper v2" font-size=14 color="#666666"
+              else if (activeTab == "a2ui")
+                column gap=8 width="100%"
+                  text "A2UI Agent Stream" role="heading" aria-level=2 font-size=24 font-weight=700
+                  text "Agent-to-User Interface generative UI" font-size=14 color="#666666"
+              else if (activeTab == "exact")
+                column gap=8 width="100%"
+                  text "Exact Native" role="heading" aria-level=2 font-size=24 font-weight=700
+                  text "All-platform native app framework" font-size=14 color="#666666"
+              else if (activeTab == "elephant")
+                column gap=8 width="100%"
+                  text "Elephant Goldfish" role="heading" aria-level=2 font-size=24 font-weight=700
+                  text "Design-review workflow: brainstorm, draft, review, resolve" font-size=14 color="#666666"
+              else if (activeTab == "artex")
+                column gap=8 width="100%"
+                  text "ARTEX" role="heading" aria-level=2 font-size=24 font-weight=700
+                  text "AI autonomous penetration testing - 142 modules" font-size=14 color="#666666"
+              else if (activeTab == "nethunter")
+                column gap=8 width="100%"
+                  text "Kali Nethunter" role="heading" aria-level=2 font-size=24 font-weight=700
+                  text "Mobile Kali Linux toolset on Android" font-size=14 color="#666666"
+              else if (activeTab == "rea")
+                column gap=8 width="100%"
+                  text "REA / Craft Anything" role="heading" aria-level=2 font-size=24 font-weight=700
+                  text "Reverse Engineering Analysis tools" font-size=14 color="#666666"
+              else if (activeTab == "context7")
+                column gap=8 width="100%"
+                  text "Context7 API" role="heading" aria-level=2 font-size=24 font-weight=700
+                  text "Documentation lookup - Permanent" font-size=14 color="#666666"
