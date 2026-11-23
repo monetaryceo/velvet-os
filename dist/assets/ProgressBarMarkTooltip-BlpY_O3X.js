@@ -1,0 +1,1 @@
+import{r as a}from"./index-Cn-6biVa.js";import{jsx as t}from"react/jsx-runtime";function i({content:r,children:o}){return t(a,{content:r,placement:"above",focusTrigger:"always",children:o})}export{i as default};

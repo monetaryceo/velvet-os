@@ -1,0 +1,321 @@
+:root {
+  --velvet-bg-primary: #0a0a0f;
+  --velvet-bg-secondary: #12121a;
+  --velvet-bg-tertiary: #1a1a2e;
+  --velvet-border: #2a2a4a;
+  --velvet-accent: #bb86fc;
+  --velvet-accent-hover: #d0a9fc;
+  --velvet-accent-muted: rgba(187, 134, 252, 0.15);
+  --velvet-text-primary: #e8e8f0;
+  --velvet-text-secondary: #a0a0b8;
+  --velvet-text-muted: #6a6a8a;
+  --velvet-success: #03dac6;
+  --velvet-warning: #ffb300;
+  --velvet-error: #cf6679;
+  --velvet-info: #64b5f6;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --velvet-bg-primary: #f8f8fc;
+    --velvet-bg-secondary: #ffffff;
+    --velvet-bg-tertiary: #f0f0f8;
+    --velvet-border: #d0d0e0;
+    --velvet-accent: #7c4dff;
+    --velvet-accent-hover: #9575ff;
+    --velvet-accent-muted: rgba(124, 77, 255, 0.15);
+    --velvet-text-primary: #1a1a2e;
+    --velvet-text-secondary: #4a4a6a;
+    --velvet-text-muted: #8a8a9a;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family-base, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  background-color: var(--velvet-bg-primary);
+  color: var(--velvet-text-primary);
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--velvet-bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--velvet-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--velvet-text-muted);
+}
+
+/* Selection */
+::selection {
+  background: var(--velvet-accent-muted);
+  color: var(--velvet-accent);
+}
+
+/* Focus visible */
+:focus-visible {
+  outline: 2px solid var(--velvet-accent);
+  outline-offset: 2px;
+}
+
+/* Velvet OS specific utilities */
+.velvet-card {
+  background: var(--velvet-bg-secondary);
+  border: 1px solid var(--velvet-border);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.velvet-panel {
+  background: var(--velvet-bg-tertiary);
+  border: 1px solid var(--velvet-border);
+  border-radius: 8px;
+}
+
+.velvet-accent-text {
+  color: var(--velvet-accent);
+}
+
+.velvet-muted-text {
+  color: var(--velvet-text-muted);
+}
+
+.velvet-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.velvet-flex {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Terminal styling */
+.velvet-terminal {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  background: #0d0d14;
+  border: 1px solid var(--velvet-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.velvet-terminal-header {
+  background: var(--velvet-bg-tertiary);
+  border-bottom: 1px solid var(--velvet-border);
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.velvet-terminal-body {
+  padding: 16px;
+  min-height: 300px;
+  overflow-y: auto;
+}
+
+.velvet-terminal-line {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 4px;
+  align-items: flex-start;
+}
+
+.velvet-terminal-prompt {
+  color: var(--velvet-accent);
+  white-space: nowrap;
+}
+
+.velvet-terminal-output {
+  color: var(--velvet-text-secondary);
+  word-break: break-word;
+}
+
+.velvet-terminal-input {
+  background: transparent;
+  border: none;
+  color: var(--velvet-text-primary);
+  font-family: inherit;
+  font-size: inherit;
+  outline: none;
+  flex: 1;
+}
+
+/* Agent card */
+.velvet-agent-card {
+  background: var(--velvet-bg-secondary);
+  border: 1px solid var(--velvet-border);
+  border-radius: 12px;
+  padding: 16px;
+  transition: all 0.2s ease;
+}
+
+.velvet-agent-card:hover {
+  border-color: var(--velvet-accent);
+  box-shadow: 0 4px 20px rgba(187, 134, 252, 0.1);
+}
+
+.velvet-agent-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.velvet-agent-status.running {
+  background: rgba(3, 218, 198, 0.15);
+  color: var(--velvet-success);
+}
+
+.velvet-agent-status.idle {
+  background: rgba(160, 160, 184, 0.15);
+  color: var(--velvet-text-secondary);
+}
+
+.velvet-agent-status.training {
+  background: rgba(255, 179, 0, 0.15);
+  color: var(--velvet-warning);
+}
+
+/* Model card */
+.velvet-model-card {
+  background: var(--velvet-bg-secondary);
+  border: 1px solid var(--velvet-border);
+  border-radius: 12px;
+  padding: 16px;
+  transition: all 0.2s ease;
+}
+
+.velvet-model-card:hover {
+  border-color: var(--velvet-accent);
+}
+
+/* Tool card */
+.velvet-tool-card {
+  background: var(--velvet-bg-secondary);
+  border: 1px solid var(--velvet-border);
+  border-radius: 12px;
+  padding: 16px;
+  transition: all 0.2s ease;
+}
+
+.velvet-tool-card:hover {
+  border-color: var(--velvet-accent);
+}
+
+.velvet-tool-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  background: var(--velvet-accent-muted);
+  color: var(--velvet-accent);
+}
+
+/* Memory item */
+.velvet-memory-item {
+  background: var(--velvet-bg-secondary);
+  border: 1px solid var(--velvet-border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+}
+
+.velvet-memory-item:hover {
+  border-color: var(--velvet-accent);
+}
+
+/* Dashboard stat card */
+.velvet-stat-card {
+  background: var(--velvet-bg-secondary);
+  border: 1px solid var(--velvet-border);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.velvet-stat-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--velvet-text-primary);
+  line-height: 1;
+}
+
+.velvet-stat-label {
+  font-size: 14px;
+  color: var(--velvet-text-secondary);
+  margin-top: 8px;
+}
+
+.velvet-stat-trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 12px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.velvet-stat-trend.positive {
+  color: var(--velvet-success);
+}
+
+.velvet-stat-trend.negative {
+  color: var(--velvet-error);
+}
+
+/* Animation */
+@keyframes velvet-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes velvet-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.velvet-loading {
+  animation: velvet-spin 1s linear infinite;
+}
+
+.velvet-pulse {
+  animation: velvet-pulse 2s ease-in-out infinite;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .velvet-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .velvet-stat-value {
+    font-size: 24px;
+  }
+}
