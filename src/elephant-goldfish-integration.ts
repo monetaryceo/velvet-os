@@ -1,0 +1,20 @@
+export type SkillType = 'brainstorm' | 'draft' | 'review' | 'resolve' | 'bootstrap' | 'drift-report';
+export interface SkillResult { skillId: string; type: SkillType; input: any; output: any; timestamp: number; }
+export interface Episode { id: string; timestamp: number; type: string; data: any; vector: number[]; }
+export class ElephantGoldfishIntegration {
+  private skills: Map<string, SkillResult[]> = new Map();
+  private episodes: Episode[] = [];
+  private maxEpisodes: number = 1000;
+  async bootstrap(context: any): Promise<SkillResult> { const result: SkillResult = { skillId: 'bootstrap_' + Date.now(), type: 'bootstrap', input: context, output: { bootstrapped: true, context }, timestamp: Date.now() }; this.recordSkill(result); this.addEpisode('bootstrap', { context, result }); return result; }
+  async brainstorm(context: any, count: number = 5): Promise<SkillResult> { const ideas = Array.from({ length: count }, (_, i) => ({ id: i, idea: 'Idea ' + (i + 1) + ' for: ' + (context.topic || 'unknown'), confidence: Math.random() })); const result: SkillResult = { skillId: 'brainstorm_' + Date.now(), type: 'brainstorm', input: context, output: { ideas }, timestamp: Date.now() }; this.recordSkill(result); this.addEpisode('brainstorm', { context, result }); return result; }
+  async draft(context: any, idea: any): Promise<SkillResult> { const result: SkillResult = { skillId: 'draft_' + Date.now(), type: 'draft', input: { context, idea }, output: { draft: 'Draft based on: ' + (idea.idea || idea), sections: ['overview', 'details', 'conclusion'] }, timestamp: Date.now() }; this.recordSkill(result); this.addEpisode('draft', { context, idea, result }); return result; }
+  async review(context: any, draft: any): Promise<SkillResult> { const result: SkillResult = { skillId: 'review_' + Date.now(), type: 'review', input: { context, draft }, output: { review: 'Review of draft', score: 0.85, suggestions: ['Add more detail', 'Clarify objectives'] }, timestamp: Date.now() }; this.recordSkill(result); this.addEpisode('review', { context, draft, result }); return result; }
+  async resolve(context: any, draft: any, review: any): Promise<SkillResult> { const result: SkillResult = { skillId: 'resolve_' + Date.now(), type: 'resolve', input: { context, draft, review }, output: { resolved: true, finalDraft: 'Resolved draft', changes: ['Applied review suggestions'] }, timestamp: Date.now() }; this.recordSkill(result); this.addEpisode('resolve', { context, draft, review, result }); return result; }
+  async driftReport(context: any): Promise<SkillResult> { const result: SkillResult = { skillId: 'drift-report_' + Date.now(), type: 'drift-report', input: context, output: { drift: 'No significant drift detected', changedSections: [], recommendations: [] }, timestamp: Date.now() }; this.recordSkill(result); this.addEpisode('drift-report', { context, result }); return result; }
+  async runWorkflow(context: any): Promise<SkillResult[]> { const bootstrap = await this.bootstrap(context); const brainstorm = await this.brainstorm(context); const idea = brainstorm.output.ideas[0]; const draft = await this.draft(context, idea); const review = await this.review(context, draft.output); const resolve = await this.resolve(context, draft.output, review.output); const drift = await this.driftReport(context); return [bootstrap, brainstorm, draft, review, resolve, drift]; }
+  private recordSkill(result: SkillResult): void { if (!this.skills.has(result.skillId)) this.skills.set(result.skillId, []); this.skills.get(result.skillId)!.push(result); }
+  private addEpisode(type: string, data: any): void { const episode: Episode = { id: 'ep_' + Date.now(), timestamp: Date.now(), type, data, vector: Array(128).fill(0) }; this.episodes.push(episode); if (this.episodes.length > this.maxEpisodes) this.episodes.shift(); }
+  getSkills(): SkillResult[] { return [...this.skills.values()].flat().sort((a, b) => b.timestamp - a.timestamp); }
+  getEpisodes(): Episode[] { return [...this.episodes].sort((a, b) => b.timestamp - a.timestamp); }
+}
+export const elephantGoldfishIntegration = new ElephantGoldfishIntegration();

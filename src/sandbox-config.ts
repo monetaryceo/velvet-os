@@ -1,0 +1,13 @@
+export type SandboxProfile = 'strict' | 'standard' | 'permissive';
+export interface NamespaceConfig { pid: boolean; net: boolean; mnt: boolean; uts: boolean; ipc: boolean; user: boolean; cgroup: boolean; }
+export interface CgroupConfig { cpuShares?: number; memoryLimitMB?: number; cpuQuota?: number; }
+export interface SandboxConfig { namespaces: NamespaceConfig; cgroups: CgroupConfig; seccomp: string[]; readonlyPaths: string[]; tmpfsPaths: string[]; readonlyRoot: boolean; }
+export class SandboxConfigBuilder {
+  static strict(): SandboxConfig { return { namespaces: { pid: true, net: true, mnt: true, uts: true, ipc: true, user: true, cgroup: true }, cgroups: { cpuShares: 512, memoryLimitMB: 256, cpuQuota: 50000 }, seccomp: ['kill', 'trap', 'errno', 'trace', 'allow', 'log'], readonlyPaths: ['/etc', '/usr', '/bin', '/sbin', '/lib', '/lib64'], tmpfsPaths: ['/tmp', '/var/tmp'], readonlyRoot: true }; }
+  static standard(): SandboxConfig { return { namespaces: { pid: true, net: false, mnt: true, uts: true, ipc: false, user: false, cgroup: true }, cgroups: { cpuShares: 1024, memoryLimitMB: 512, cpuQuota: -1 }, seccomp: ['allow'], readonlyPaths: ['/etc', '/usr'], tmpfsPaths: ['/tmp'], readonlyRoot: false }; }
+  static permissive(): SandboxConfig { return { namespaces: { pid: false, net: false, mnt: false, uts: false, ipc: false, user: false, cgroup: false }, cgroups: { cpuShares: 1024, memoryLimitMB: -1, cpuQuota: -1 }, seccomp: ['allow'], readonlyPaths: [], tmpfsPaths: [], readonlyRoot: false }; }
+  static toOCI(config: SandboxConfig): string { return JSON.stringify({ namespaces: config.namespaces, cgroups: config.cgroups, readonly_paths: config.readonlyPaths, tmpfs_paths: config.tmpfsPaths, readonly_root: config.readonlyRoot, seccomp: config.seccomp }, null, 2); }
+  static toSystemdNspawn(config: SandboxConfig): string[] { const args: string[] = []; if (config.namespaces.pid) args.push('--private-pids'); if (config.namespaces.net) args.push('--private-network'); if (config.namespaces.mnt) args.push('--private-mounts'); if (config.readonlyRoot) args.push('--read-only'); if (config.cgroups.memoryLimitMB) args.push('--memory-limit=' + config.cgroups.memoryLimitMB + 'M'); return args; }
+  static toBubblewrap(config: SandboxConfig): string[] { const args: string[] = []; if (config.readonlyRoot) args.push('--ro-bind', '/', '/'); if (config.tmpfsPaths.length > 0) { for (const path of config.tmpfsPaths) { args.push('--tmpfs', path); } } if (config.readonlyPaths.length > 0) { for (const path of config.readonlyPaths) { args.push('--ro-bind', path, path); } } return args; }
+}
+export const sandboxConfig = SandboxConfigBuilder;
